@@ -402,6 +402,29 @@ function Private.GuiBuilder:Page(Name)
 			LocalIndex += 1
 			return _Button
 		end
+		--- Creating a Text Box
+		--- @param Options table { Name: string, ClearOnFocus: boolean, DefaultText: string|nil, HolderText: string|nil, Callback: any|nil }
+		function SectionBuilder:TextBox(Options)
+			local _TBox = Private.ExamplesUI.TextBox:Clone()
+			local _Box = _TBox.Box
+			_TBox.Label.Text = Options.Name or ''
+			_Box.ClearTextOnFocus = (Options.ClearOnFocus == true) or false
+			_Box.Text = Options.DefaultText or ''
+			_Box.PlaceholderText = Options.HolderText or ''
+			_Box.Focused:Connect(function()
+				Services.TweenService:Create(_Box,TweenInfo.new(.45),{Position = UDim2.new(.48,0,.5,0), Size = UDim2.new(.48,0,.8,0), BackgroundColor3 = Color3.fromRGB(69, 69, 69)}):Play()
+			end)
+			_Box.FocusLost:Connect(function()
+				local Text = _Box.Text
+				Services.TweenService:Create(_Box,TweenInfo.new(.45),{Position = UDim2.new(.68,0,.5,0), Size = UDim2.new(.28,0,.8,0), BackgroundColor3 = Color3.fromRGB(65, 65, 65)}):Play()
+				if Options.Callback ~= nil then
+					Options.Callback(Options,Text)
+				end
+			end)
+			_TBox.LayoutOrder = LocalIndex
+			_TBox.Parent = _Section.Border
+			LocalIndex += 1
+		end
 		return SectionBuilder
 	end
 	return PageBuilder
